@@ -35,7 +35,7 @@ public class Board {
 
     public void removePiece(int x, int y) {
         if (x >= 0 && x < size && y >= 0 && y < size) {
-            grid[x][y] = null; // Taşı tahtadan kaldır
+            grid[x][y] = null;
             System.out.println("Piece removed from (" + x + ", " + y + ")");
         } else {
             System.out.println("Invalid coordinates for removing piece: (" + x + ", " + y + ")");
