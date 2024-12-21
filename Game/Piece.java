@@ -1,16 +1,12 @@
-package Game;
+ackage Game;
 
 public class Piece {
     private String color;
     private boolean isKing;
 
-    public Piece(String color) {
+    public Piece(String color, boolean isKing) {
         this.color = color;
-        this.isKing = false;
-    }
-
-    public void promoteToKing() {
-        this.isKing = true;
+        this.isKing = isKing;
     }
 
     public String getColor() {
@@ -19,5 +15,9 @@ public class Piece {
 
     public boolean isKing() {
         return isKing;
+    }
+
+    public void promoteToKing() {
+        this.isKing = true;
     }
 }
