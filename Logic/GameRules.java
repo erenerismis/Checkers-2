@@ -1,11 +1,10 @@
 package Logic;
 
-import java.util.ArrayList;
-import java.util.List;
 
+import Game.Board;
+import Game.Piece;
 public class GameRules {
 
-    public class GameRules {
 
         public boolean isValidMove(Board board, int startX, int startY, int endX, int endY) {
             Piece piece = board.getPieceAt(startX, startY);
