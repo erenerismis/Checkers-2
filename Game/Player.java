@@ -16,11 +16,5 @@ public class Player {
     public String getColor() {
         return color;
     }
-    public String setName() {
-        this.name=name;
-    }
-    public String setColor(){
-        this.color=color;
-    }
 
 }
