@@ -1,4 +1,4 @@
-ackage Game;
+Package Game;
 
 public class Piece {
     private String color;
