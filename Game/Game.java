@@ -18,12 +18,12 @@ public class Game {
     private int timeLimit = 5;
 
     public void startLobby() {
-        JFrame lobbyFrame = new JFrame("Checkers2-Lobby");
+        JFrame lobbyFrame = new JFrame("Dama - Lobi");
         lobbyFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         lobbyFrame.setSize(400, 300);
         lobbyFrame.setLayout(new GridLayout(5, 2));
 
-
+        // Oyuncu adları
         JTextField player1Field = new JTextField(player1Name);
         JTextField player2Field = new JTextField(player2Name);
         lobbyFrame.add(new JLabel("Player 1 Name:"));
@@ -31,27 +31,27 @@ public class Game {
         lobbyFrame.add(new JLabel("Player 2 Name:"));
         lobbyFrame.add(player2Field);
 
-
+        // Tahta boyutu seçimi
         JComboBox<String> boardSizeBox = new JComboBox<>(new String[]{"7x7", "8x8", "9x9", "10x10"});
-        boardSizeBox.setSelectedIndex(1); //8x8
+        boardSizeBox.setSelectedIndex(1);
         lobbyFrame.add(new JLabel("Board Size:"));
         lobbyFrame.add(boardSizeBox);
 
-
-        JComboBox<String> timeLimitBox = new JComboBox<>(new String[]{"1 Min", "5 Min", "10 Min"});
-        timeLimitBox.setSelectedIndex(1); // (5 dk)
+        // Zaman seçimi
+        JComboBox<String> timeLimitBox = new JComboBox<>(new String[]{"Hızlı Oyun (1 dk)", "Normal Oyun (5 dk)", "Uzun Oyun (10 dk)"});
+        timeLimitBox.setSelectedIndex(1);
         lobbyFrame.add(new JLabel("Time Limit:"));
         lobbyFrame.add(timeLimitBox);
 
-
-        JButton startButton = new JButton("Start Game");
+        // "Oyuna Başla" butonu
+        JButton startButton = new JButton("Oyuna Başla");
         startButton.addActionListener(e -> {
             player1Name = player1Field.getText();
             player2Name = player2Field.getText();
             boardSize = 7 + boardSizeBox.getSelectedIndex();
             timeLimit = switch (timeLimitBox.getSelectedIndex()) {
-                case 0 -> 1;
-                case 1 -> 5;
+                case 0 -> 1; // Hızlı Oyun
+                case 1 -> 5; // Normal Oyun
                 case 2 -> 10;
                 default -> 5;
             };
@@ -66,10 +66,11 @@ public class Game {
     }
 
     public void start() {
-        board = new Board(boardSize);
+        board = new Board(boardSize); //
         rules = new GameRules();
         display = new GameDisplay(board, player1Name, player2Name, timeLimit);
         isWhiteTurn = true;
+
 
         SwingUtilities.invokeLater(() -> {
             renderBoard();
@@ -150,6 +151,7 @@ public class Game {
         Piece piece = board.getPieceAt(startX, startY);
         Piece midPiece = board.getPieceAt(midX, midY);
 
+
         return Math.abs(endX - startX) == 2 && Math.abs(endY - startY) == 2 &&
                 midPiece != null &&
                 !midPiece.getColor().equals(piece.getColor()) &&
@@ -157,8 +159,7 @@ public class Game {
     }
 
 
-
-    private boolean isGameOver() {
+    public boolean isGameOver() {
         boolean whiteHasPieces = false;
         boolean blackHasPieces = false;
         boolean whiteHasMoves = false;
@@ -184,21 +185,14 @@ public class Game {
             }
         }
 
-        if (!whiteHasPieces) {
+        if (!whiteHasPieces || !whiteHasMoves) {
             System.out.println("Game Over! Black wins!");
+            exitLobby();
             return true;
         }
-        if (!blackHasPieces) {
+        if (!blackHasPieces || !blackHasMoves) {
             System.out.println("Game Over! White wins!");
-            return true;
-        }
-
-        if (!whiteHasMoves) {
-            System.out.println("Game Over! Black wins! White has no valid moves.");
-            return true;
-        }
-        if (!blackHasMoves) {
-            System.out.println("Game Over! White wins! Black has no valid moves.");
+            exitLobby();
             return true;
         }
 
@@ -231,6 +225,72 @@ public class Game {
         InputHandling inputHandling = new InputHandling(board, rules, this::renderBoard, this, isWhiteTurn);
         inputHandling.attachListeners((JPanel) display.getContentPane().getComponent(0));
     }
+
+    public void exitLobby() {
+        JFrame exitFrame = new JFrame("Game Over");
+        exitFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        exitFrame.setSize(300, 200);
+        exitFrame.setLayout(new GridLayout(4, 1));
+
+        JLabel messageLabel = new JLabel("The game is over!", SwingConstants.CENTER);
+        JLabel winnerLabel = new JLabel(getWinnerMessage(), SwingConstants.CENTER);
+
+        JButton restartButton = new JButton("Restart Game");
+        restartButton.addActionListener(e -> {
+            exitFrame.dispose();
+            start();
+        });
+
+        JButton goToLobbyButton = new JButton("Go to Lobby");
+        goToLobbyButton.addActionListener(e -> {
+            exitFrame.dispose();
+            startLobby();
+        });
+
+        JButton closeButton = new JButton("Close Game");
+        closeButton.addActionListener(e -> {
+            exitFrame.dispose();
+            System.exit(0);
+        });
+
+        exitFrame.add(messageLabel);
+        exitFrame.add(winnerLabel);
+        exitFrame.add(restartButton);
+        exitFrame.add(goToLobbyButton);
+        exitFrame.add(closeButton);
+
+        exitFrame.setVisible(true);
+    }
+
+    private String getWinnerMessage() {
+        boolean whiteHasPieces = false;
+        boolean blackHasPieces = false;
+
+        for (int i = 0; i < board.getSize(); i++) {
+            for (int j = 0; j < board.getSize(); j++) {
+                Piece piece = board.getPieceAt(i, j);
+                if (piece != null) {
+                    if (piece.getColor().equals("White")) {
+                        whiteHasPieces = true;
+                    } else if (piece.getColor().equals("Black")) {
+                        blackHasPieces = true;
+                    }
+                }
+            }
+        }
+
+        if (!whiteHasPieces) {
+            return "Black wins!";
+        }
+        if (!blackHasPieces) {
+            return "White wins!";
+        }
+        return "It's a draw!";
+    }
+
+
+
+
 
 
 }
