@@ -1,4 +1,4 @@
-Package Game;
+package Game;
 
 public class Piece {
     private String color;
