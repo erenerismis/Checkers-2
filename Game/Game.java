@@ -16,6 +16,8 @@ public class Game {
     private String player2Name = "Player 2";
     private int boardSize = 8;
     private int timeLimit = 5;
+    private Player player1;
+    private Player player2;
 
     public void startLobby() {
         JFrame lobbyFrame = new JFrame("Dama - Lobi");
@@ -46,8 +48,12 @@ public class Game {
         // "Oyuna Başla" butonu
         JButton startButton = new JButton("Oyuna Başla");
         startButton.addActionListener(e -> {
-            player1Name = player1Field.getText();
-            player2Name = player2Field.getText();
+            player1Name = player1Field.getText().trim();
+            player2Name = player2Field.getText().trim();
+
+            player1 = new Player(player1Name.isEmpty() ? "Player 1" : player1Name, "White");
+            player2 = new Player(player2Name.isEmpty() ? "Player 2" : player2Name, "Black");
+
             boardSize = 7 + boardSizeBox.getSelectedIndex();
             timeLimit = switch (timeLimitBox.getSelectedIndex()) {
                 case 0 -> 1; // Hızlı Oyun
@@ -66,15 +72,16 @@ public class Game {
     }
 
     public void start() {
-        board = new Board(boardSize); //
+        board = new Board(boardSize);
         rules = new GameRules();
-        display = new GameDisplay(board, player1Name, player2Name, timeLimit);
+        display = new GameDisplay(board, player1, player2, timeLimit);
         isWhiteTurn = true;
-
+        player1 = new Player(player1Name, "White");
+        player2 = new Player(player2Name, "Black");
 
         SwingUtilities.invokeLater(() -> {
-            renderBoard();
             display.setVisible(true);
+            renderBoard();
         });
     }
 
@@ -294,4 +301,3 @@ public class Game {
 
 
 }
-
