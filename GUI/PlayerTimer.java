@@ -1,15 +1,9 @@
-//
-// Source code recreated from a .class file by IntelliJ IDEA
-// (powered by FernFlower decompiler)
-//
 
 package GUI;
 
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.Timer;
 
 public class PlayerTimer extends JPanel {
     private int timeInSeconds;
@@ -41,7 +35,6 @@ public class PlayerTimer extends JPanel {
             this.timer.stop();
             this.endTurn = true;
         }
-
     }
 
     public void setEndTurn(boolean endTurn) {
@@ -51,11 +44,9 @@ public class PlayerTimer extends JPanel {
         } else {
             this.timer.start();
         }
-
     }
 
     public boolean isEndTurn() {
         return this.endTurn;
     }
 }
-
